@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR CODE GENERATOR </title>
+  <link rel="stylesheet" href="{% static '../static/styles/qrcode_style.css' %}">
+<link rel="stylesheet" href="{% static '../static/bootstrap/css/bootstrap.min.css '%}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static '/static/bootstrap/js/bootstrap.min.js' %}"></script>
+</head>
+<body style="background-color:#57606f;">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="height:90px">
+          <div class="container-fluid">
+            <img src="../static/icon/titleicon.png" height="50" width="50" style="margin-left: 8%">
+            <a href="/" class="navbar-brand" style="font-size:30px;color: white;">Password Manager</a>
+            <div class=" collapse navbar-collapse" id="mynavbar">
+              <ul class="navbar-nav" style="margin-left: auto;">
+                <li class="nav-item">
+                  <a href="/" class="nav-link navopt" style="color: white;">Home</a>
+                </li>
+                  <li class="nav-item">
+                      <a href="" target="_self" class="nav-link navopt" style="color:white;" >QRCode</a>
+                  </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    </header>
+
+
+
+
+  <div style="display:flex;justify-content:center;align-items:center;margin-top:5%">
+    <div class="code" >
+    <form action="#" id="frm">
+
+     <div class="form-group">
+      <label for="url">Enter Website Link</label>
+      <input type="url"  id="url" placeholder="Enter URL" required>
+     </div>
+
+     <div class="form-group">
+      <label for="size">Select Your Size</label>
+      <select id="size">
+        <option value="100">100x100</option>
+        <option value="200">200x200</option>
+        <option value="300">300x300</option>
+        <option value="400">400x400</option>
+      </select>
+    </div>
+    <div class="form-single-group">
+      <label for="colorDark">Color Dark</label>
+      <input type="color" id="colorDark" value="#000000">
+    </div>
+    <div class="form-single-group">
+      <label for="colorLight">Color Light</label>
+      <input type="color" id="colorLight" value="#ffffff">
+    </div>
+    <button type="submit" class="btn bg-primary" style="margin-left:24%;margin-top:10%">Generate QR Code</button>
+    </form>
+  </div>
+  <div class="output">
+    <div id="qrcode">
+      <img src="images/joes.png">
+    </div>
+    <div id="loading">
+      <div id="spinner"></div>
+      <p>Please Wait</p>
+    </div>
+  </div>
+  </div>
+  <script>
+    const frm=document.querySelector('#frm');
+const output=document.querySelector('#output');
+const spinner=document.querySelector('#loading');
+const qrcodeElement=document.querySelector('#qrcode');
+const btnSave=document.querySelector('#btn-save');
+
+
+
+function generateQRCode(e){
+  e.preventDefault();
+  const url=document.querySelector('#url').value;
+  const size=document.querySelector('#size').value;
+  const clrDark=document.querySelector('#colorDark').value;
+  const clrLight=document.querySelector('#colorLight').value;
+
+  if(url===""){
+    alert("Please Enter Your Website Link");
+  }else{
+    //Show Spinner
+    spinner.style.display='flex';
+
+    setTimeout(()=>{
+
+        //Hide Spinner
+        spinner.style.display='none';
+        qrcodeElement.innerHTML="";
+
+        const qrcode=new QRCode('qrcode',{
+          text: url,
+          width: size,
+	        height: size,
+          colorDark : clrDark,
+	        colorLight : clrLight,
+          correctLevel : QRCode.CorrectLevel.H
+        });
+
+
+    },1000);
+
+
+    createDownloadLink();
+  }
+}
+frm.addEventListener('submit',generateQRCode);
+
+function createDownloadLink(){
+  const imgSrc=qrcodeElement.querySelector('img').src;
+  btnSave.href=imgSrc;
+}
+
+btnSave.addEventListener('click',()=>{
+  setTimeout(()=>{
+    btnSave.download='qrcode';
+  },50);
+});
+  </script>
+</body> 
+</html>
